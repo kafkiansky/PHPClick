@@ -8,8 +8,8 @@
         "async"
     ],
     "require": {
-        "php": "^8.1",
-        "kafkiansky/binary": "^0.3.0",
+        "php": "^8.2",
+        "kafkiansky/binary": "^0.4.0",
         "amphp/http-client": "^5.1"
     },
     "require-dev": {
