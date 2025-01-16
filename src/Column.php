@@ -32,9 +32,6 @@ namespace Kafkiansky\PHPClick;
  */
 final readonly class Column
 {
-    /**
-     * @param non-empty-string $value
-     */
     public static function string(string $value): ColumnValuer
     {
         return new Internal\StringColumn($value);

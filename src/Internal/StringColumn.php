@@ -35,9 +35,6 @@ use Kafkiansky\PHPClick\ColumnValuer;
  */
 final readonly class StringColumn implements ColumnValuer
 {
-    /**
-     * @param non-empty-string $value
-     */
     public function __construct(
         private string $value,
     ) {
