@@ -35,9 +35,23 @@ use Kafkiansky\PHPClick\ColumnValuer;
  */
 final readonly class DateTime64Column implements ColumnValuer
 {
+    /** @var list<int> */
+    private const POW10 = [
+        1, 10, 100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000, 1_000_000_000
+    ];
+
+    /**
+     * @param \DateTimeInterface $value
+     * @param int $precision DateTime64(N) where N is precision, 0–9 | 3 by default
+     * @throws \InvalidArgumentException
+     */
     public function __construct(
         private \DateTimeInterface $value,
+        private int $precision = 3,
     ) {
+        if ($this->precision < 0 || $this->precision > 9) {
+            throw new \InvalidArgumentException('DateTime64 precision must be 0–9.');
+        }
     }
 
     public function write(Buffer $buffer): void
@@ -45,6 +59,18 @@ final readonly class DateTime64Column implements ColumnValuer
         $seconds = $this->value->getTimestamp();
         $microseconds = (int) $this->value->format('u');
 
-        $buffer->writeInt64(($seconds * 1_000_000) + $microseconds);
+        $base = $seconds * self::POW10[$this->precision];
+
+        if ($this->precision === 0) {
+            $fraction = 0; // truncate fractional part entirely
+        } elseif ($this->precision <= 6) {
+            // downscale microseconds to 10^-N with integer truncation
+            $fraction = intdiv($microseconds, self::POW10[6 - $this->precision]);
+        } else {
+            // upscale microseconds to 10^-N
+            $fraction = $microseconds * self::POW10[$this->precision - 6];
+        }
+
+        $buffer->writeInt64($base + $fraction);
     }
 }

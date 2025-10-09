@@ -60,9 +60,9 @@ final readonly class Column
         return new Internal\DateTimeColumn($value);
     }
 
-    public static function dateTime64(\DateTimeInterface $value): ColumnValuer
+    public static function dateTime64(\DateTimeInterface $value, int $precision = 3): ColumnValuer
     {
-        return new Internal\DateTime64Column($value);
+        return new Internal\DateTime64Column($value, $precision);
     }
 
     public static function uint8(int $value): ColumnValuer

@@ -171,6 +171,7 @@ final class ColumnTest extends TestCase
         yield 'datetime64' => [
             Column::dateTime64(
                 (new \DateTimeImmutable())->setTimestamp(1719758949),
+                6,
             ),
             static function (Buffer $buffer): \DateTimeImmutable {
                 $timestamp = $buffer->consumeInt64();
